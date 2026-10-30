@@ -40,6 +40,10 @@ void draw() {
 
     textSize(25);
     text("Cookies: " + score, 50, 100);
+    
+    if (score >= 10) {
+      text("Cursor", 500, 250);
+    }
   }
 }
 
