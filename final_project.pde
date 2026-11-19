@@ -8,6 +8,7 @@
 PImage cookie;
 PFont boldFont;
 float cookies = 0;
+int highScore = 0;
 int startTime = 0;
 float cookiesPerSecond = 0;
 int cursorUpgradeCost = 15;
@@ -30,6 +31,18 @@ void setup() {
   textFont(boldFont);
   fill(0);
   startTime = millis();
+
+  File f = new File(dataPath("highscore.json"));
+  if (f.exists()) {
+    JSONObject obj = loadJSONObject ("highscore.json");
+    highScore = obj.getInt("score");
+  }
+}
+
+void savedHighScore() {
+ JSONObject obj = new JSONObject();
+ obj.setInt("score", highScore);
+ saveJSONObject(obj, "data/highscore.json");
 }
 
 void draw() {
@@ -61,6 +74,8 @@ void draw() {
     fill(0, 0, 0);
     circle(circleX, circleY, circleRadius);
     image(cookie, 50, 220, 250, 250);
+
+    text("Highest cookie amount: " + highScore, 485, 85);
 
     textSize(25);
     text("Cookies: " + int(cookies), 50, 100);
@@ -214,6 +229,11 @@ void draw() {
   if (millis() - startTime >= 1000) {
     cookies += cookiesPerSecond;
     startTime = millis();
+    
+    if(cookies > highScore) {
+      highScore = int(cookies);
+      savedHighScore();
+    }
   }
 }
 
